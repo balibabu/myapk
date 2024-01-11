@@ -4,7 +4,7 @@
     "slug": "myapk",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/note-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -19,12 +19,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/note-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.balibabu.myapk"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.ico"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "7d80d68d-ec5d-4862-a625-3808bfa01048"
+      }
     }
   }
 }
