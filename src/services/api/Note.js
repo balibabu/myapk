@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_BASE_URL } from "../global/variables";
+import { API_BASE_URL } from "./_baseUrl";
 
 export async function GetNoteList(token) {
     try {
@@ -33,10 +33,11 @@ export async function AddNote(token, note) {
             return response.data;
         } else {
             console.error(`Request failed with status ${response.status}`);
+            return false;
         }
     } catch (error) {
         console.error(error);
-        throw error;
+        return false;
     }
 }
 

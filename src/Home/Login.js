@@ -10,21 +10,25 @@ import {
     Alert,
 } from "react-native";
 import { Login } from "../services/api/auth";
+import { useDispatch } from "react-redux";
+import { saveTokenThunk } from "../states/userdata/userThunk";
 export default function LoginPage({ navigation }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const dispatch = useDispatch();
+    
 
     const handleLogin = async () => {
         if (!username || !password) {
             Alert.alert("Please enter both username and password");
             return;
         }
-        console.log(password);
+        
         try {
             const token = await Login(username, password);
-            console.log(token);
             if (token) {
-                navigation.navigate('Note');
+                dispatch(saveTokenThunk(token));
+                navigation.navigate('Notes');
             } else {
                 Alert.alert("Invalid credentials. Please try again.");
             }

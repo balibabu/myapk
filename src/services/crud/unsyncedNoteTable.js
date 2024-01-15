@@ -1,6 +1,7 @@
-import { addNoteSql, deleteNoteSql, fetchNotesSql, updateNoteSql } from "../db/notedb";
+import { addNoteSql, createTableSql, deleteNoteSql, fetchNotesSql, updateNoteSql } from "../db/noteUnsync";
 
 export async function getAllNotes(){
+    await createTableSql();
     const notes=await fetchNotesSql();
     return notes;
 }

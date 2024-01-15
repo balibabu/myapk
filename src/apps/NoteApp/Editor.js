@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { FloatButton } from './utils/FloatButton';
+import { useDispatch } from 'react-redux';
+import { addNoteThunk, updateNoteThunk } from '../../states/noteapp/noteappThunks';
 
 
 const dummyDetails = { title: '', description: '', color: '#a2d2ff' }
 export const Editor = (props) => {
 	const [noteDetails, setNoteDetails] = useState(dummyDetails);
-    const [color, setColor] = useState(0);
+	const [color, setColor] = useState(0);
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (props.route.params) {
@@ -17,20 +20,22 @@ export const Editor = (props) => {
 
 	const handleSaveNote = async () => {
 		if (props.route.params) {
-			// updateNoteSql(noteDetails);
+			console.log('update');
+			dispatch(updateNoteThunk(noteDetails));
 		} else {
 			const id = new Date().getTime().toString();
-			// addNoteSql({ id, ...noteDetails })
+			console.log('insert');
+			dispatch(addNoteThunk({ id, ...noteDetails }));
 		}
 		props.navigation.goBack();
 	};
 
 	const changeColor = () => {
 		setColor((prev) => {
-            const nextColor = (prev + 1) % Colors.length;
+			const nextColor = (prev + 1) % Colors.length;
 			setNoteDetails((prev) => ({ ...prev, color: Colors[nextColor] }));
-            return nextColor;
-        });
+			return nextColor;
+		});
 	}
 
 	return (
@@ -42,18 +47,18 @@ export const Editor = (props) => {
 					onChangeText={(text) => setNoteDetails((prev) => ({ ...prev, title: text }))}
 					style={styles.titleStyle}
 				/>
-				<TouchableOpacity style={{ borderRadius: 10,backgroundColor: noteDetails.color }} onPress={changeColor}>
+				<TouchableOpacity style={{ borderRadius: 10, backgroundColor: noteDetails.color }} onPress={changeColor}>
 					<View style={styles.colorPicker}></View>
 				</TouchableOpacity>
 
 			</View>
-			<View style={{ ...styles.inputAreaStyle, backgroundColor: noteDetails.color }} onPress={()=>console.log('hi')}>
+			<View style={{ ...styles.inputAreaStyle, backgroundColor: noteDetails.color }} onPress={() => console.log('hi')}>
 				<TextInput
 					value={noteDetails.description}
 					onChangeText={(text) => setNoteDetails((prev) => ({ ...prev, description: text }))}
 					multiline
 					style={styles.descriptionStyle}
-					placeholder={'description'+'\n'.repeat(50)}
+					placeholder={'description' + '\n'.repeat(50)}
 				/>
 			</View>
 			<FloatButton title={'save'} onClick={handleSaveNote} />
@@ -80,11 +85,11 @@ const styles = StyleSheet.create({
 		padding: 15,
 	},
 	colorPicker: {
-        width: 30,
-        height: 30,
-        borderWidth: 1,
-        borderRadius: 10,
-    },
+		width: 30,
+		height: 30,
+		borderWidth: 1,
+		borderRadius: 10,
+	},
 
 	titleAndColorContainer: {
 		flexDirection: 'row',

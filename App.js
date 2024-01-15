@@ -1,4 +1,3 @@
-import { StyleSheet } from 'react-native';
 import NoteApp from './src/apps/NoteApp/NoteApp';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -17,21 +16,12 @@ export default function App() {
                     headerStyle: { backgroundColor: '#415a77' },
                     headerTintColor: 'white',
                 }}
-                    initialRouteName='Note'>
+                    initialRouteName='Notes'>
                     <Stack.Screen name='Login' component={LoginPage} />
-                    <Stack.Screen name="Note" component={NoteApp} />
+                    <Stack.Screen name="Notes" component={NoteApp} />
                     <Stack.Screen name="Editor" component={Editor} />
                 </Stack.Navigator>
             </NavigationContainer>
         </Provider>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'grey',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-});

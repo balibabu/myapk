@@ -20,7 +20,6 @@ export async function getUserInfo(token) {
     }
 }
 export async function Login(username, password) {
-    console.log(username);
     try {
         const response = await axios.post(`${API_BASE_URL}/user/login/`, {
             username,

@@ -1,16 +1,24 @@
 import { useEffect, useState } from "react";
-import { Button, FlatList, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Button, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Note from "./Note";
 import { FloatButton } from "./utils/FloatButton";
-import { StatusBar } from "expo-status-bar";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllNotesThunk } from "../../states/noteapp/noteappThunks";
+import { getAllNotesThunk, syncNoteThunk } from "../../states/noteapp/noteappThunks";
+import { getTokenThunk } from "../../states/userdata/userThunk";
+import NetInfo from '@react-native-community/netinfo';
 
 export default function NoteApp({ navigation }) {
-    const notes = useSelector((state) => state.noteapp);
+    const token = useSelector((state) => state.user.token);
     const dispatch = useDispatch();
+    const notes = useSelector((state) => state.noteapp);
+    const [online, setOnline] = useState(false);
+
     useEffect(() => {
         dispatch(getAllNotesThunk());
+        dispatch(getTokenThunk());
+        NetInfo.fetch().then(state => {
+            setOnline(state.isConnected)
+        });
     }, [])
 
 
@@ -21,15 +29,21 @@ export default function NoteApp({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <StatusBar style="auto" />
-            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            {!token && <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                 <View style={styles.loginBtn}><Text>Login For Cloud Backup</Text></View>
-            </TouchableOpacity>
+            </TouchableOpacity>}
+
             <FlatList
                 data={notes}
                 keyExtractor={(note) => note.id.toString()}
                 renderItem={renderNote}
             />
+
+            {online ?
+                <TouchableOpacity onPress={() => dispatch(syncNoteThunk(token))}>
+                    <View style={styles.loginBtn}><Text>sync</Text></View>
+                </TouchableOpacity> : <Text>you are offline</Text>
+            }
             <FloatButton title={'add'} onClick={() => navigation.navigate('Editor')} />
         </View>
     )

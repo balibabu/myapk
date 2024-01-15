@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { addNoteThunk, deleteNoteThunk, getAllNotesThunk, updateNoteThunk } from "./noteappThunks";
+import { addNoteThunk, deleteNoteThunk, getAllNotesThunk, syncNoteThunk, updateNoteThunk } from "./noteappThunks";
 
 const noteappSlice = createSlice({
     name: 'notes',
@@ -29,6 +29,9 @@ const noteappSlice = createSlice({
                 return state.map((note) =>
                     note.id === updatedNote.id ? updatedNote : note
                 );
+            })
+            .addCase(syncNoteThunk.fulfilled, (state) => {
+                return state;
             })
     },
 })
