@@ -17,7 +17,9 @@ export default function NoteApp({ navigation }) {
         dispatch(getAllNotesThunk());
         dispatch(getTokenThunk());
         NetInfo.fetch().then(state => {
-            setOnline(state.isConnected)
+            if(state.isConnected){
+                setOnline(state.isConnected)
+            }
         });
     }, [])
 
