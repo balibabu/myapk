@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { FloatButton } from './utils/FloatButton';
-import { useDispatch } from 'react-redux';
-import { addNoteThunk, updateNoteThunk } from '../../states/noteapp/noteappThunks';
+import { useDispatch, useSelector } from 'react-redux';
+import { updatedNote } from '../../services/crud/note/update';
+import { addNote } from '../../services/crud/note/insert';
 
 
 const dummyDetails = { title: '', description: '', color: '#a2d2ff' }
 export const Editor = (props) => {
+	const token = useSelector((state) => state.user.token);
 	const [noteDetails, setNoteDetails] = useState(dummyDetails);
 	const [color, setColor] = useState(0);
 	const dispatch = useDispatch();
@@ -19,13 +21,14 @@ export const Editor = (props) => {
 
 
 	const handleSaveNote = async () => {
+		console.log('update');
 		if (props.route.params) {
-			console.log('update');
-			dispatch(updateNoteThunk(noteDetails));
+			const isSynced = noteDetails.action === undefined;
+			updatedNote(noteDetails, isSynced, token, dispatch);
 		} else {
-			const id = new Date().getTime().toString();
 			console.log('insert');
-			dispatch(addNoteThunk({ id, ...noteDetails }));
+			const id = new Date().getTime().toString();
+			addNote({ id, ...noteDetails }, token, dispatch);
 		}
 		props.navigation.goBack();
 	};
@@ -42,7 +45,7 @@ export const Editor = (props) => {
 		<View style={styles.container}>
 			<View style={{ ...styles.titleAndColorContainer, backgroundColor: noteDetails.color }}>
 				<TextInput
-					placeholder="Title                                           "
+					placeholder={'title' + ' '.repeat(50) + 'h'}
 					value={noteDetails.title}
 					onChangeText={(text) => setNoteDetails((prev) => ({ ...prev, title: text }))}
 					style={styles.titleStyle}

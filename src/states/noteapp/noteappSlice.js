@@ -1,40 +1,52 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { addNoteThunk, deleteNoteThunk, getAllNotesThunk, syncNoteThunk, updateNoteThunk } from "./noteappThunks";
+import { getNotes } from "./noteappThunk";
 
 const noteappSlice = createSlice({
     name: 'notes',
-    initialState: [],
+    initialState: { synced: [], unsynced: [] },
     reducers: {
-        addNote: (state, action) => {
-            const newNote = action.payload;
-            return [newNote, ...state];
+        addNoteToSynced: (state, action) => {
+            const note = action.payload;
+            return { ...state, synced: [note, ...state.synced] };
         },
+        addNoteToUnSynced: (state, action) => {
+            const note = action.payload;
+            return { ...state, unsynced: [note, ...state.unsynced] };
+        },
+        deleteNoteFromSynced: (state, action) => {
+            const id = action.payload;
+            console.log(id);
+            return { ...state, synced: state.synced.filter((note) => note.id !== id) }; // check if this correct way
+        },
+        deleteNoteFromUnSynced: (state, action) => {
+            const id = action.payload;
+            return { ...state, unsynced: state.unsynced.filter((note) => note.id != id) }; // check if this correct way
+        },
+        updateNoteSynced: (state, action) => {
+            const updatedNote = action.payload;
+            return { ...state, synced: state.synced.map((note) => note.id === updatedNote.id ? updatedNote : note) }
+        },
+        updateNoteUnSynced: (state, action) => {
+            const updatedNote = action.payload;
+            return { ...state, unsynced: state.unsynced.map((note) => note.id === updatedNote.id ? updatedNote : note) }
+        }
     },
-
     extraReducers: (builder) => {
         builder
-            .addCase(getAllNotesThunk.fulfilled, (state, action) => {
-                return [...action.payload];
+            .addCase(getNotes.fulfilled, (state, action) => {
+                return action.payload;
             })
-            .addCase(addNoteThunk.fulfilled, (state, action) => {
-                const newNote = action.payload;
-                return [newNote, ...state]
-            })
-            .addCase(deleteNoteThunk.fulfilled, (state, action) => {
-                const id = action.payload;
-                return state.filter((note) => note.id !== id);
-            })
-            .addCase(updateNoteThunk.fulfilled, (state, action) => {
-                const updatedNote = action.payload;
-                return state.map((note) =>
-                    note.id === updatedNote.id ? updatedNote : note
-                );
-            })
-            .addCase(syncNoteThunk.fulfilled, (state) => {
-                return state;
-            })
-    },
+    }
 })
 
-export const { addNote } = noteappSlice.actions;
+export const {
+    addNoteToSynced,
+    addNoteToUnSynced,
+    deleteNoteFromSynced,
+    deleteNoteFromUnSynced,
+    updateNoteSynced,
+    updateNoteUnSynced
+
+} = noteappSlice.actions;
+
 export default noteappSlice.reducer;

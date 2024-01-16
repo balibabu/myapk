@@ -51,15 +51,17 @@ export async function UpdateNote(token, newNote) {
             },
         })
         if (response.status === 200) {
-            return response.data;
+            return true;
         }
+        return false;
     } catch (error) {
         console.log(error);
-        throw error;
+        return false;
     }
 }
 
 export async function DeleteNote(token, id) {
+    console.log('id',id);
     try {
         const response = await axios.delete(`${API_BASE_URL}/note/id/${id}/`, {
             headers: {
@@ -71,8 +73,8 @@ export async function DeleteNote(token, id) {
         }
         return false;
     } catch (error) {
-        console.log(error);
-        throw error;
+        console.log('inside api',error);
+        return false;
     }
 }
 

@@ -5,10 +5,18 @@ import { Editor } from './src/apps/NoteApp/Editor';
 import LoginPage from './src/Home/Login';
 import { Provider } from 'react-redux';
 import { store } from './src/states/store';
+import { useEffect } from 'react';
+import { createTableSql as createTableSqlSync } from './src/services/db/noteSync';
+import { createTableSql } from './src/services/db/noteUnsync';
 
 
 const Stack = createStackNavigator();
 export default function App() {
+    useEffect(() => {
+        createTableSqlSync();
+        createTableSql();
+    }, [])
+
     return (
         <Provider store={store}>
             <NavigationContainer>

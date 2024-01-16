@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { Button, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Note from "./Note";
 import { FloatButton } from "./utils/FloatButton";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllNotesThunk, syncNoteThunk } from "../../states/noteapp/noteappThunks";
 import { getTokenThunk } from "../../states/userdata/userThunk";
 import NetInfo from '@react-native-community/netinfo';
+import { getNotes } from "../../states/noteapp/noteappThunk";
 
 export default function NoteApp({ navigation }) {
     const token = useSelector((state) => state.user.token);
@@ -14,10 +14,10 @@ export default function NoteApp({ navigation }) {
     const [online, setOnline] = useState(false);
 
     useEffect(() => {
-        dispatch(getAllNotesThunk());
         dispatch(getTokenThunk());
+        dispatch(getNotes());
         NetInfo.fetch().then(state => {
-            if(state.isConnected){
+            if (state.isConnected) {
                 setOnline(state.isConnected)
             }
         });
@@ -25,9 +25,8 @@ export default function NoteApp({ navigation }) {
 
 
     const renderNote = ({ item }) => (
-        <Note key={item.id} note={item} navigation={navigation} />
+        <Note key={item.id} note={item} navigation={navigation} color={item.action ? 'pink' : 'green'} />
     );
-
 
     return (
         <View style={styles.container}>
@@ -36,13 +35,13 @@ export default function NoteApp({ navigation }) {
             </TouchableOpacity>}
 
             <FlatList
-                data={notes}
+                data={[...notes.synced, ...notes.unsynced.filter((note) => note.action !== 'delete')]}
                 keyExtractor={(note) => note.id.toString()}
                 renderItem={renderNote}
             />
 
             {online ?
-                <TouchableOpacity onPress={() => dispatch(syncNoteThunk(token))}>
+                <TouchableOpacity onPress={() => console.log(token)}>
                     <View style={styles.loginBtn}><Text>sync</Text></View>
                 </TouchableOpacity> : <Text>you are offline</Text>
             }

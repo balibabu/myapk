@@ -2,13 +2,36 @@ import { baseDB, note_sync_table } from "./baseDB";
 
 const db = baseDB;
 
+export async function isTablePresent() {
+    return new Promise((resolve, reject) => {
+        db.transaction(
+            (tx) => {
+                tx.executeSql(
+                    `SELECT name FROM sqlite_master WHERE type='table' AND name=?;`,
+                    [note_sync_table],
+                    (_, result) => {
+                        if (result.rows.length > 0) {
+                            resolve(true);
+                        }
+                        resolve(false);
+                    },
+                    (_, error) => reject(new Error("Error checking table existence: " + error))
+                );
+            },
+            (error) => {
+                reject(new Error("Transaction error: " + error));
+            }
+        );
+    });
+}
+
+
 export async function createTableSql() {
     return new Promise((resolve, reject) => {
         db.transaction((tx) => {
             tx.executeSql(
                 `create table if not exists ${note_sync_table} (
                     id integer primary key not null,
-                    user_id integer,
                     title text,
                     description text,
                     color text,
@@ -20,7 +43,7 @@ export async function createTableSql() {
                 (_, error) => reject(error)
             );
         },
-        (error) => console.error("Transaction Error:", error),
+            (error) => console.error("Transaction Error:", error),
         );
     });
 }
@@ -45,15 +68,20 @@ export function fetchNotesSql() {
 }
 
 
-export async function addNoteSql(newNote) {
-    db.transaction(
-        (tx) => {
-            tx.executeSql(
-                `INSERT INTO ${note_sync_table} (user_id, title, description, color, created_time, modified_time) VALUES (?, ?, ?, ?, ?, ?);`,
-                [newNote.user_id, newNote.title, newNote.description, newNote.color, newNote.created_time, newNote.modified_time]
-            );
-        }
-    );
+export function addNoteSql(newNote) {
+    return new Promise((resolve, reject) => {
+        db.transaction(
+            (tx) => {
+                tx.executeSql(
+                    `INSERT INTO ${note_sync_table} (id,title, description, color, created_time, modified_time) VALUES (?,?, ?, ?, ?, ?);`,
+                    [newNote.id,newNote.title, newNote.description, newNote.color, newNote.created_time, newNote.modified_time],
+                    (_, result) => resolve(result),
+                    (_, error) => reject(error)
+                );
+            },
+            (error) => console.error("Transaction Error:", error)
+        );
+    });
 }
 
 
