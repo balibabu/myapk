@@ -30,7 +30,7 @@ export default function NoteApp({ navigation }) {
 
     return (
         <View style={styles.container}>
-            {!token && <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            {!(token && online) && <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                 <View style={styles.loginBtn}><Text>Login For Cloud Backup</Text></View>
             </TouchableOpacity>}
 
