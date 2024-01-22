@@ -12,22 +12,30 @@ import {
 import { Login } from "../services/api/auth";
 import { useDispatch } from "react-redux";
 import { saveTokenThunk } from "../states/userdata/userThunk";
+import { GetNoteList } from "../services/api/Note";
+import { batchInsertNotes } from "../states/noteapp/noteappSlice";
+import { batchInsert } from "../services/db/noteSync";
 export default function LoginPage({ navigation }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [btnClicked, setBtnClicked] = useState(false);
     const dispatch = useDispatch();
-    
+
 
     const handleLogin = async () => {
+        setBtnClicked(true);
         if (!username || !password) {
             Alert.alert("Please enter both username and password");
             return;
         }
-        
+
         try {
             const token = await Login(username, password);
             if (token) {
                 dispatch(saveTokenThunk(token));
+                const notes = await GetNoteList(token);
+                dispatch(batchInsertNotes(notes));
+                await batchInsert(notes);
                 navigation.navigate('Notes');
             } else {
                 Alert.alert("Invalid credentials. Please try again.");
@@ -36,6 +44,7 @@ export default function LoginPage({ navigation }) {
             console.error("Error during login:", error);
             Alert.alert("An error occurred. Please try again later.");
         }
+        setBtnClicked(false);
     };
 
     return (
@@ -58,7 +67,7 @@ export default function LoginPage({ navigation }) {
                     onChangeText={(password) => setPassword(password)}
                 />
             </View>
-            <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
+            <TouchableOpacity style={styles.loginBtn} onPress={handleLogin} disabled={btnClicked}>
                 <Text style={styles.loginText}>LOGIN</Text>
             </TouchableOpacity>
         </View>

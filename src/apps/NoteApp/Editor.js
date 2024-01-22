@@ -4,9 +4,10 @@ import { FloatButton } from './utils/FloatButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { updatedNote } from '../../services/crud/note/update';
 import { addNote } from '../../services/crud/note/insert';
+import weeklyColor from './utils/weeklyColor';
 
 
-const dummyDetails = { title: '', description: '', color: '#a2d2ff' }
+const dummyDetails = { title: '', description: '', color: weeklyColor() }
 export const Editor = (props) => {
 	const token = useSelector((state) => state.user.token);
 	const [noteDetails, setNoteDetails] = useState(dummyDetails);
@@ -45,7 +46,7 @@ export const Editor = (props) => {
 		<View style={styles.container}>
 			<View style={{ ...styles.titleAndColorContainer, backgroundColor: noteDetails.color }}>
 				<TextInput
-					placeholder={'title' + ' '.repeat(50) + 'h'}
+					placeholder={'title' + ' '.repeat(55)}
 					value={noteDetails.title}
 					onChangeText={(text) => setNoteDetails((prev) => ({ ...prev, title: text }))}
 					style={styles.titleStyle}

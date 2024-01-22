@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     floatingButtonStyle: {
 		padding:10,
 		position: 'absolute',
-		bottom: 20,
+		bottom: 10,
 		right: 20,
 		borderRadius: 20,
 		borderWidth: 4,
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#06d6a0',
 	  },
 	  buttonTextStyle: {
-		fontSize: 20,
+		fontSize: 28,
 		fontWeight: 'bold',
 	  },
 });

@@ -29,6 +29,10 @@ const noteappSlice = createSlice({
         updateNoteUnSynced: (state, action) => {
             const updatedNote = action.payload;
             return { ...state, unsynced: state.unsynced.map((note) => note.id === updatedNote.id ? updatedNote : note) }
+        },
+        batchInsertNotes: (state, action) => {
+            const notes = action.payload;
+            return { ...state, synced: [...notes, ...state.synced] };
         }
     },
     extraReducers: (builder) => {
@@ -45,7 +49,8 @@ export const {
     deleteNoteFromSynced,
     deleteNoteFromUnSynced,
     updateNoteSynced,
-    updateNoteUnSynced
+    updateNoteUnSynced,
+    batchInsertNotes
 
 } = noteappSlice.actions;
 

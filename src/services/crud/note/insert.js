@@ -24,27 +24,3 @@ export async function addNote(note, token, dispatch) {
     dispatch(addNoteToUnSynced(unsyncedNote));
     addNoteSqlUnsynced(unsyncedNote);
 }
-
-// import NetInfo from '@react-native-community/netinfo';
-// import { AddNote } from '../../api/Note';
-// import { addNoteToSynced, addNoteToUnSynced } from '../../../states/noteapp/noteappSlice';
-// import { addNoteSql } from '../../db/noteSync';
-// import { addNoteSql as addNoteSqlUnsynced } from '../../db/noteUnsync';
-
-// export async function addNote(note, token, dispatch) {
-//     if (token) {
-//         NetInfo.fetch().then(state => {
-//             if (state.isConnected) {
-//                 AddNote(token, note)
-//                     .then((newNote) => {
-//                         dispatch(addNoteToSynced(newNote));
-//                         addNoteSql(newNote);
-//                         return; // check if this correct way
-//                     })
-//             }
-//         });
-//     }
-//     const unsyncedNote = { ...note, action: 'insert' };
-//     dispatch(addNoteToUnSynced(unsyncedNote));
-//     addNoteSqlUnsynced(unsyncedNote);
-// }

@@ -31,34 +31,3 @@ export async function deleteNote(id, token, dispatch, isSynced) {
     deleteNoteSql(id);
     addNoteSql({ id, action: 'delete' })
 }
-
-// import { deleteNoteFromSynced, deleteNoteFromUnSynced } from "../../../states/noteapp/noteappSlice";
-// import { DeleteNote } from "../../api/Note";
-// import { addNoteSql, deleteNoteSql as deleteNoteSqlUnsync } from "../../db/noteUnsync";
-// import { deleteNoteSql } from "../../db/noteSync";
-
-// export async function deleteNote(id, token, dispatch, isSynced) {
-//     if (!isSynced) {
-//         dispatch(deleteNoteFromUnSynced(id));
-//         deleteNoteSqlUnsync(id);
-//         return;
-//     }
-
-//     if (token) {
-//         NetInfo.fetch().then(state => {
-//             if (state.isConnected) {
-//                 DeleteNote(token, id).then((status) => {
-//                     if (status) {
-//                         dispatch(deleteNoteFromSynced(id));
-//                         deleteNoteSql(id);
-//                     }
-//                     // throw new Error  // check if this correct way
-//                 }).catch((error) => {
-//                     deleteNoteSql(id);
-//                     addNoteSql({ id, action: 'delete' })
-//                     console.log(error);
-//                 })
-//             }
-//         });
-//     }
-// }

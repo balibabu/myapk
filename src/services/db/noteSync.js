@@ -84,6 +84,13 @@ export function addNoteSql(newNote) {
     });
 }
 
+export async function batchInsert(notes) {
+    for(const note of notes){
+        await addNoteSql(note);
+    }
+}
+
+
 
 export async function updateNoteSql(updatedNote) {
     return new Promise((resolve, reject) => {
